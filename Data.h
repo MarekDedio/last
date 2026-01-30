@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 class Data
 {
@@ -17,4 +18,10 @@ public:
 	void Wpisz();
 	void Koryguj();
 	bool Porownaj(const Data & wzor) const;
+
+	Data & operator =(const Data & wzorzec);
+	bool operator ==(const Data & wzorzec) const;
+
+	friend std::ostream & operator <<(std::ostream & s, const Data & d);
+	friend std::istream & operator >>(std::istream & s, Data & d);
 };
