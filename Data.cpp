@@ -1,10 +1,12 @@
 #include "Data.h"
-#include <iostream>
 
 using namespace std;
 
 Data::Data(void)
 {
+	m_nDzien = 1;
+	m_nMiesiac = 1;
+	m_nRok = 2000;
 }
 
 void Data::Ustaw(int d, int m, int r)
@@ -85,4 +87,33 @@ bool Data::Porownaj(const Data & wzor) const
 		return true;
 	}
 	return false;
+}
+
+Data & Data::operator =(const Data & wzorzec)
+{
+	if (this == &wzorzec) return *this;
+	m_nDzien = wzorzec.m_nDzien;
+	m_nMiesiac = wzorzec.m_nMiesiac;
+	m_nRok = wzorzec.m_nRok;
+	return *this;
+}
+
+bool Data::operator ==(const Data & wzorzec) const
+{
+	return Porownaj(wzorzec);
+}
+
+ostream & operator <<(ostream & s, const Data & d)
+{
+	s << d.m_nDzien << "-" << d.m_nMiesiac << "-" << d.m_nRok;
+	return s;
+}
+
+istream & operator >>(istream & s, Data & d)
+{
+	char temp;
+	// format: d-m-r
+	s >> d.m_nDzien >> temp >> d.m_nMiesiac >> temp >> d.m_nRok;
+	d.Koryguj();
+	return s;
 }

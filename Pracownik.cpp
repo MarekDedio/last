@@ -37,6 +37,13 @@ Pracownik& Pracownik::operator=(const Pracownik& wzor)
 	return *this;
 }
 
+bool Pracownik::operator==(const Pracownik& wzor) const
+{
+	return (strcmp(m_pszImie, wzor.m_pszImie) == 0 &&
+		strcmp(m_pszNazwisko, wzor.m_pszNazwisko) == 0 &&
+		m_DataUrodzenia == wzor.m_DataUrodzenia);
+}
+
 const char* Pracownik::Imie() const
 {
 	return m_pszImie;
@@ -108,4 +115,23 @@ bool Pracownik::SprawdzNazwisko(const char* por_nazwisko) const
 {
 	if (!m_pszNazwisko) return false;
 	return (strcmp(m_pszNazwisko, por_nazwisko) == 0);
+}
+
+ostream& operator<<(ostream& os, const Pracownik& p)
+{
+	os << p.m_pszImie << " " << p.m_pszNazwisko << " " << p.m_DataUrodzenia;
+	return os;
+}
+
+istream& operator>>(istream& is, Pracownik& p)
+{
+	char tempImie[100];
+	char tempNazwisko[100];
+
+	is >> tempImie >> tempNazwisko >> p.m_DataUrodzenia;
+
+	p.Imie(tempImie);
+	p.Nazwisko(tempNazwisko);
+
+	return is;
 }
