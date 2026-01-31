@@ -1,127 +1,154 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include "Data.h"
+#include "Brygada.h"
 #include "Pracownik.h"
-#include "Ekipa.h"
 
 using namespace std;
 
-void TestData()
+// Function to handle Brigade editing
+void EdytujBrygade(Brygada& brygada)
 {
-	cout << "--- Test Data ---" << endl;
-	Data d1;
-	d1.Ustaw(1, 1, 2023);
-	cout << "d1: " << d1 << endl;
+    int opcja;
+    do
+    {
+        cout << "\n--- Edycja Brygady (ID: " << brygada.GetID() << ") ---" << endl;
+        cout << "1. Ustaw Kierownika" << endl;
+        cout << "2. Dodaj Pracownika (Wypelnij)" << endl;
+        cout << "3. Wypisz Brygade" << endl;
+        cout << "0. Wroc" << endl;
+        cout << "Wybor: ";
+        cin >> opcja;
 
-	Data d2;
-	d2 = d1;
-	cout << "d2 (po przypisaniu d1): " << d2 << endl;
-
-	if (d1 == d2) cout << "d1 == d2: TRUE" << endl;
-	else cout << "d1 == d2: FALSE" << endl;
-
-	d2.Ustaw(2, 2, 2024);
-	cout << "d2 (po zmianie): " << d2 << endl;
-	if (d1 == d2) cout << "d1 == d2: TRUE" << endl;
-	else cout << "d1 == d2: FALSE" << endl;
-}
-
-void TestPracownik()
-{
-	cout << "\n--- Test Pracownik ---" << endl;
-	Pracownik p1("Jan", "Kowalski");
-	p1.DataUrodzenia(15, 5, 1990);
-	cout << "p1: " << p1 << endl;
-
-	Pracownik p2;
-	p2 = p1;
-	cout << "p2 (po przypisaniu p1): " << p2 << endl;
-
-	if (p1 == p2) cout << "p1 == p2: TRUE" << endl;
-	else cout << "p1 == p2: FALSE" << endl;
-
-	p2.Imie("Adam");
-	cout << "p2 (po zmianie imienia): " << p2 << endl;
-	if (p1 == p2) cout << "p1 == p2: TRUE" << endl;
-	else cout << "p1 == p2: FALSE" << endl;
-}
-
-void TestEkipa()
-{
-	cout << "\n--- Test Ekipa ---" << endl;
-	// Symulacja danych wejsciowych dla Ekipy przez stringstream
-	// Format: dlugosc, aktualne_wypelnienie, pracownicy...
-	stringstream ss;
-	ss << "2 2\nJan Kowalski 15-5-1990\nAdam Nowak 20-10-1985\n";
-
-	Ekipa e1_loaded(0);
-	ss >> e1_loaded;
-
-	cout << "e1_loaded (wczytana z pamieci): " << endl << e1_loaded;
-
-	Ekipa e2 = e1_loaded; // Copy constructor
-	cout << "e2 (konstruktor kopiujacy z e1): " << endl << e2;
-
-	if (e1_loaded == e2) cout << "e1 == e2: TRUE" << endl;
-	else cout << "e1 == e2: FALSE" << endl;
-
-	Ekipa e3;
-	e3 = e1_loaded; // Assignment
-	cout << "e3 (operator przypisania z e1): " << endl << e3;
-
-	if (e1_loaded == e3) cout << "e1 == e3: TRUE" << endl;
-	else cout << "e1 == e3: FALSE" << endl;
-}
-
-void TestPlik()
-{
-	cout << "\n--- Test Zapis/Odczyt Pliku ---" << endl;
-	// Create data using stringstream trick
-	stringstream ss;
-	ss << "2 2\nJan Kowalski 15-5-1990\nAdam Nowak 20-10-1985\n";
-	Ekipa e1(0);
-	ss >> e1;
-
-	// Save to file
-	ofstream out("baza.txt");
-	if (out.is_open())
-	{
-		out << e1;
-		out.close();
-		cout << "Zapisano do baza.txt" << endl;
-	}
-	else
-	{
-		cout << "Blad otwarcia pliku do zapisu!" << endl;
-		return;
-	}
-
-	// Read from file
-	ifstream in("baza.txt");
-	if (in.is_open())
-	{
-		Ekipa e2(0);
-		in >> e2;
-		in.close();
-		cout << "Wczytano z baza.txt:" << endl;
-		cout << e2;
-
-		if (e1 == e2) cout << "Odczyt poprawny (e1 == e2)" << endl;
-		else cout << "Blad odczytu (e1 != e2)" << endl;
-	}
-	else
-	{
-		cout << "Blad otwarcia pliku do odczytu!" << endl;
-	}
+        switch (opcja)
+        {
+        case 1:
+            {
+                Pracownik p;
+                cout << "Podaj dane kierownika:" << endl;
+                p.Wpisz();
+                brygada.SetKierownik(p);
+            }
+            break;
+        case 2:
+            brygada.Wypelnij();
+            break;
+        case 3:
+            cout << brygada << endl;
+            break;
+        case 0:
+            break;
+        default:
+            cout << "Nieznana opcja!" << endl;
+        }
+    } while (opcja != 0);
 }
 
 int main()
 {
-	TestData();
-	TestPracownik();
-	TestEkipa();
-	TestPlik();
+    // Initialize 4 brigades.
+    // Since we can't easily pass IDs in array declaration in older C++,
+    // we will rely on default constructor.
+    // Ideally we would want distinct IDs, but the assignment constraint makes it hard
+    // without C++11 initializer lists or pointers.
+    // Let's assume default ID 0 is acceptable or we use a pointer array.
+    // "może być tablica statyczna lub dynamiczna 4 obiektów typu Brygada"
 
-	return 0;
+    // Let's use dynamic array of pointers to allow initialization with IDs?
+    // Or just a static array.
+    // "tablica statyczna ... obiektów" -> Brygada tab[4];
+
+    Brygada* system[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        // Allocate with capacity 5 for example, and ID = i+1
+        system[i] = new Brygada(5, i + 1);
+    }
+
+    int opcja;
+    do
+    {
+        cout << "\n=== SYSTEM 4 BRYGADOWY ===" << endl;
+        cout << "1. Edycja Brygady" << endl;
+        cout << "2. Wypisz Wszystkie" << endl;
+        cout << "3. Zapisz do Pliku (baza.txt)" << endl;
+        cout << "4. Wczytaj z Pliku (baza.txt)" << endl;
+        cout << "0. Wyjscie" << endl;
+        cout << "Wybor: ";
+        cin >> opcja;
+
+        switch (opcja)
+        {
+        case 1:
+            {
+                int nr;
+                cout << "Wybierz brygade (1-4): ";
+                cin >> nr;
+                if (nr >= 1 && nr <= 4)
+                {
+                    EdytujBrygade(*system[nr - 1]);
+                }
+                else
+                {
+                    cout << "Nieprawidlowy numer!" << endl;
+                }
+            }
+            break;
+        case 2:
+            for (int i = 0; i < 4; ++i)
+            {
+                cout << "\nBrygada " << i + 1 << ":" << endl;
+                cout << *system[i] << endl;
+            }
+            break;
+        case 3:
+            {
+                ofstream out("baza.txt");
+                if (out.is_open())
+                {
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        out << *system[i] << endl;
+                    }
+                    out.close();
+                    cout << "Zapisano dane." << endl;
+                }
+                else
+                {
+                    cout << "Blad zapisu!" << endl;
+                }
+            }
+            break;
+        case 4:
+            {
+                ifstream in("baza.txt");
+                if (in.is_open())
+                {
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        in >> *system[i];
+                    }
+                    in.close();
+                    cout << "Wczytano dane." << endl;
+                }
+                else
+                {
+                    cout << "Blad odczytu!" << endl;
+                }
+            }
+            break;
+        case 0:
+            cout << "Koniec programu." << endl;
+            break;
+        default:
+            cout << "Nieznana opcja!" << endl;
+        }
+    } while (opcja != 0);
+
+    // Cleanup
+    for (int i = 0; i < 4; ++i)
+    {
+        delete system[i];
+    }
+
+    return 0;
 }
