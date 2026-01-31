@@ -130,46 +130,70 @@ void Ekipa::Wypisz() const
 	}
 }
 
-ostream& operator<<(ostream& os, const Ekipa& ekipa)
+const Pracownik* Ekipa::GetTablica() const
 {
-	os << ekipa.dlugosc << endl;
-	os << ekipa.aktualne_wypelnienie << endl;
-	for (int i = 0; i < ekipa.aktualne_wypelnienie; i++)
-	{
-		os << ekipa.tablica[i] << endl;
-	}
-	return os;
+	return tablica;
 }
 
-istream& operator>>(istream& is, Ekipa& ekipa)
+long int Ekipa::GetDlugosc() const
+{
+	return dlugosc;
+}
+
+int Ekipa::GetAktualneWypelnienie() const
+{
+	return aktualne_wypelnienie;
+}
+
+void Ekipa::WypiszDane(ostream& os) const
+{
+	os << dlugosc << endl;
+	os << aktualne_wypelnienie << endl;
+	for (int i = 0; i < aktualne_wypelnienie; i++)
+	{
+		os << tablica[i] << endl;
+	}
+}
+
+void Ekipa::WczytajDane(istream& is)
 {
 	long int nowa_dlugosc;
 	int nowe_wypelnienie;
 
-	if (!(is >> nowa_dlugosc)) return is;
-	if (!(is >> nowe_wypelnienie)) return is;
+	if (!(is >> nowa_dlugosc)) return; // If initial read fails
+	if (!(is >> nowe_wypelnienie)) return;
 
 	if (nowa_dlugosc < 0) nowa_dlugosc = 0;
 	if (nowe_wypelnienie < 0) nowe_wypelnienie = 0;
 	if (nowe_wypelnienie > nowa_dlugosc) nowe_wypelnienie = nowa_dlugosc;
 
-	delete [] ekipa.tablica;
-	ekipa.dlugosc = nowa_dlugosc;
-	ekipa.aktualne_wypelnienie = 0; // We will increment as we read
+	delete [] tablica;
+	dlugosc = nowa_dlugosc;
+	aktualne_wypelnienie = 0;
 
-	if (ekipa.dlugosc > 0)
+	if (dlugosc > 0)
 	{
-		ekipa.tablica = new Pracownik[ekipa.dlugosc];
+		tablica = new Pracownik[dlugosc];
 		for (int i = 0; i < nowe_wypelnienie; i++)
 		{
-			is >> ekipa.tablica[i];
-			ekipa.aktualne_wypelnienie++;
+			is >> tablica[i];
+			aktualne_wypelnienie++;
 		}
 	}
 	else
 	{
-		ekipa.tablica = nullptr;
+		tablica = nullptr;
 	}
+}
 
+ostream& operator<<(ostream& os, const Ekipa& ekipa)
+{
+	ekipa.WypiszDane(os);
+	return os;
+}
+
+istream& operator>>(istream& is, Ekipa& ekipa)
+{
+	ekipa.WczytajDane(is);
 	return is;
 }
