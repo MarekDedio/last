@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Brygada.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Ekipa.h" />
     <ClInclude Include="Pracownik.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Brygada.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Ekipa.cpp" />
     <ClCompile Include="Pracownik.cpp" />
